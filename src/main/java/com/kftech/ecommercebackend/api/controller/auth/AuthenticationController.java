@@ -4,17 +4,15 @@ import com.kftech.ecommercebackend.api.model.LoginBody;
 import com.kftech.ecommercebackend.api.model.LoginResponse;
 import com.kftech.ecommercebackend.api.model.RegistrationBody;
 import com.kftech.ecommercebackend.exception.UserAlreadyExistException;
+import com.kftech.ecommercebackend.model.LocalUser;
 import com.kftech.ecommercebackend.service.UserService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
-import javax.security.auth.login.LoginException;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/auth")
@@ -48,5 +46,11 @@ public class AuthenticationController {
             response.setJwt(jwt);
             return ResponseEntity.ok(response);
         }
+    }
+
+    @Transactional
+    @GetMapping("/me")
+    public LocalUser getLoggedInUserProfile(@AuthenticationPrincipal LocalUser user) {
+        return user;
     }
 }
